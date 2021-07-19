@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App  </title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round|Open+Sans">
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+      <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+  
+  <div class="wrapper">
+    
+    <body>  
+      <h1 align = "center" style="font-weight:bolder;"> TO DO LIST</h1>  
+      <div class = "container">  
+          <div class = "row">  
+            <div class = "col-sm-12" align = "center" style="font-size:small;">   
+             <input type = "date" name = "date">  
+            </div>  
+              
+          </div>  
+        </div>  
+    <script src = "https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>  
+    <script src ="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+   
+    
+    <form>
+
+      <div class="formBox">
+        <label for="taskname" > &nbsp; </label><br>
+        <input type="text" id="taskname" placeholder="Enter Task Name">
+        <input type="hidden" id="taskindex">
+    
+      <select name="" id="taskpriority">
+        &nbsp;
+        <option value="3">&nbsp; Low</option>
+        <option value="2">Medium</option>
+        <option value="1">High</option>
+      </select>
+    </div>
+
+    <br>
+
+    <div class="formBox" align="center">
+        <button id="btn" align="center">Add Task</button>
+        <button  type="hidden"  id="editBtn"><a Edit data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a></button>
+        <style>
+          button {display:inline}
+       </style>
+      </div>
+<br>
+</form>
+
+<!-- PART 2 -->
+    <div>
+      <table border=1 width=300 cellpadding=10 >
+        <tr>
+          <th>&nbsp; <b>TASK NAME</b> &nbsp;</th>
+          <th><b>PRIORITY</b> &nbsp;</th>
+          <th><b>ACTION</b></th>
+        </tr>
+        <tbody id="taskTable">
+
+        </tbody>
+      </table>
+    </div>
+
+
+    <br>
+    <br>
+
+    <!-- PART 3 -->
+    <div align="center">
+      <h3>Sort By</h3>
+      <button onclick="ShowByPriority(this.value)" id="SortOption" value="1">High</button>
+      <button onclick="ShowByPriority(this.value)" id="SortOption" value="2">Medium</button>
+      <button onclick="ShowByPriority(this.value)" id="SortOption" value="3">low</button>
+      <br>
+      <br>
+
+      <table border=1 width=300 cellpadding=10 border-radius= 3px font-weight= 400 >
+        <tr>
+          <th>TASK NAME &nbsp;</th>
+          <th>PRIORITY</th>
+          <th>ACTION</th>
+        </tr>
+        <tbody id="PriorityTable">
+
+        </tbody>
+      </table>
+
+<script type="text/javascript">
+    
+    var tasks=[];
+    
+    var names=["High","Medium","Low"];
+
+    window.onload=function(){
+        displaydata();
+        var e = document.getElementById("SortOption").value;
+        ShowByPriority(e);
+        document.querySelector('form').reset();
+    }
+
+    const addTask= (ev)=>{
+        ev.preventDefault();
+        
+        var obj= {
+            name:document.getElementById('taskname').value,
+            priority:document.getElementById('taskpriority').value
+        }
+
+        if(localStorage.getItem('task-info')==null)
+            tasks=[];
+        else
+            tasks=JSON.parse(localStorage.getItem('task-info'));
+
+        tasks.push(obj);
+        localStorage.setItem('task-info',JSON.stringify(tasks));
+        var i;
+        document.querySelector('form').reset();
+        displaydata(tasks);
+        var e = document.getElementById("SortOption").value;
+        ShowByPriority(e);
+    }
+
+    const UpdateTask=(ev)=>{
+        ev.preventDefault();
+        var i=document.getElementById('taskindex').value;
+        var data=JSON.parse(localStorage.getItem('task-info'));
+        data[i].name=document.getElementById('taskname').value;
+        data[i].priority=document.getElementById('taskpriority').value;
+        localStorage.setItem('task-info',JSON.stringify(data));
+        document.getElementById('btn').style.display="block";
+        document.getElementById('editBtn').style.display="none";
+        displaydata(tasks);
+        var e = document.getElementById("SortOption").value;
+        ShowByPriority(e);
+        document.querySelector('form').reset();
+    }
+
+    function ShowByPriority(opt){
+            var data=JSON.parse(localStorage.getItem('task-info'));
+            console.log(data);
+            var PrioirityTable=document.getElementById('PriorityTable');
+            var x='';
+            var i;
+            var Delete="delete";
+            for(i=data.length-1;i>=0;i--)
+            {
+                if(opt==0)
+                {
+                    if(data[i].priority==1)
+                    {
+                        var row=`<tr style="background:#FC766AFF"><td>${data[i].name}</td><td>${names[data[i].priority-1]}</td><td><a href="#" onclick="deleteTask(${i})">Delete<i class="far fa-trash-alt" style="color:black"></i></a><a href="#" onclick="EditTask(${i})">&nbsp Edit <i class="fas fa-pen" style="color:black"></a></td></tr>`;
+                    }
+                    if(data[i].priority==2)
+                    {
+                        var row=`<tr style="background:#EEDF10"><td>${data[i].name}</td><td>${names[data[i].priority-1]}</td><td><a href="#" onclick="deleteTask(${i})">Delete<i class="far fa-trash-alt" style="color:black"></i></a><a href="#" onclick="EditTask(${i})">&nbsp Edit <i class="fas fa-pen" style="color:black"></a></td></tr>`;
+                    }
+                    if(data[i].priority==3)
+                    {
+                        var row=`<tr style="background:#2BAE66FF"><td>${data[i].name}</td><td>${names[data[i].priority-1]}</td><td><a href="#" onclick="deleteTask(${i})">Delete<i class="far fa-trash-alt" style="color:black"></i></a><a href="#" onclick="EditTask(${i})">&nbsp Edit <i class="fas fa-pen" style="color:black"></a></td></tr>`;
+                    }
+                    //var row=`<tr><td>${data[i].name}</td><td>${names[data[i].priority-1]}</td><td><a href="#" onclick="deleteTask(${i})">Delete</a><a href="#" onclick="EditTask(${i})">Edit</a></td></tr>`;
+                    //var row='<tr><td>'+data[i].name+'</td><td>'+names[data[i].priority-1]+'</td><td><a href="#">'+Delete+'</a></td></tr>';
+                    x=row+x;
+                }
+                else
+                {
+                    if(opt==data[i].priority)
+                    {
+                        if(data[i].priority==1)
+                        {
+                            var row=`<tr style="background:#FC766AFF"><td>${data[i].name}</td><td>${names[data[i].priority-1]}</td><td><a href="#" onclick="deleteTask(${i})">Delete<i class="far fa-trash-alt" style="color:black"></i></a><a href="#" onclick="EditTask(${i})">&nbsp; Edit<i class="fas fa-pen" style="color:black"></a></td></tr>`;
+                        }
+                        if(data[i].priority==2)
+                        {
+                            var row=`<tr style="background:#EEDF10"><td>${data[i].name}</td><td>${names[data[i].priority-1]}</td><td><a href="#" onclick="deleteTask(${i})">Delete<i class="far fa-trash-alt" style="color:black"></i></a><a href="#" onclick="EditTask(${i})">&nbsp; Edit<i class="fas fa-pen" style="color:black"></a></td></tr>`;
+                        }
+                        if(data[i].priority==3)
+                        {
+                            var row=`<tr style="background:#2BAE66FF"><td>${data[i].name}</td><td>${names[data[i].priority-1]}</td><td><a href="#" onclick="deleteTask(${i})">Delete<i class="far fa-trash-alt" style="color:black"></i></a><a href="#" onclick="EditTask(${i})">&nbsp; Edit<i class="fas fa-pen" style="color:black"></a></td></tr>`;
+                        }
+                        //var row=`<tr><td>${data[i].name}</td><td>${names[opt-1]}</td><td><a href="#" onclick="deleteTask(${i})">Delete</a><a href="#" onclick="EditTask(${i})">Edit</a></td></tr>`;
+                        //var row=`<tr><td>'+data[i].name+'</td><td>'+names[opt-1]+'</td><td><a href="#" onclick="deleteTask(${i})">'+Delete+</a></td></tr>`;
+                        x=row+x;
+                    }       
+                }
+            }
+            PrioirityTable.innerHTML=x;
+        }
+    
+    function EditTask(val)
+    {
+        document.getElementById('btn').style.display="none";
+        document.getElementById('editBtn').style.display="block";
+        var data=JSON.parse(localStorage.getItem('task-info'));
+        document.getElementById('taskname').value=data[val].name;
+        document.getElementById('taskpriority').value=data[val].priority;
+        document.getElementById('taskindex').value=val;
+    }
+
+    function deleteTask(val)
+    {
+        var data=JSON.parse(localStorage.getItem('task-info'));
+        data.splice(val,1);
+        localStorage.setItem('task-info',JSON.stringify(data));
+        displaydata();
+        var e = document.getElementById("SortOption").value;
+        ShowByPriority(e);
+    }
+
+
+
+    function displaydata()
+    {
+        var taskTable=document.getElementById('taskTable');
+        var data=JSON.parse(localStorage.getItem("task-info"));
+        var x='';
+        var i;
+       
+        for(i=data.length-1;i>=0;i--)
+        {
+          if(data[i].priority==1)
+                {
+                    var row=`<tr style="background:#FC766AFF"><td>${data[i].name}</td><td>${names[data[i].priority-1]}</td><td><a href="#" onclick="deleteTask(${i})">Delete<i class="far fa-trash-alt" style="color:black"></i></a><a href="#" onclick="EditTask(${i})">&nbsp; Edit<i class="fas fa-pen" style="color:black"></i></a></td></tr>`;
+                }
+                if(data[i].priority==2)
+                {
+                    var row=`<tr style="background:#EEDF10"><td>${data[i].name}</td><td>${names[data[i].priority-1]}</td><td><a href="#" onclick="deleteTask(${i})">Delete<i class="far fa-trash-alt" style="color:black"></i></a><a href="#" onclick="EditTask(${i})">&nbsp; Edit<i class="fas fa-pen" style="color:black"></i></a></td></tr>`;
+                }
+                if(data[i].priority==3)
+                {
+                    var row=`<tr style="background:#2BAE66FF"><td>${data[i].name}</td><td>${names[data[i].priority-1]}</td><td><a href="#" onclick="deleteTask(${i})">Delete<i class="far fa-trash-alt" style="color:black"></i></a><a href="#" onclick="EditTask(${i})">&nbsp; Edit<i class="fas fa-pen" style="color:black"></i></a></td></tr>`;
+                }
+         /* var row=`<tr><td>${data[i].name}</td><td>${names[data[i].priority-1]}</td><td><a href="#" onclick="deleteTask(${i})">Delete
+                  <i class="fas fa-trash" style="color:white;"></i></a>
+                  <a href="#" onclick="EditTask(${i})">Edit <i class="fas fa-pen" style="color:white;"></i></a></td></tr>`;
+            // var row=`<tr><td>${data[i].name}</td><td>${names[data[i].priority-1]}</td><td><a href="#" onclick=" deleteTask(${i})">Delete <a data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a></a><a href="#" onclick="EditTask(${i})">
+            //   Edit <a data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
+            //   </a></td></tr>`;
+            //var row='<tr><td>'+data[i].name+'</td><td>'+names[data[i].priority-1]+'</td></tr>';*/
+            x=row+x;
+        }
+        taskTable.innerHTML=x;
+    }
+    document.addEventListener('DOMContentLoaded', ()=>{
+        document.getElementById('btn').addEventListener('click', addTask);
+        document.getElementById('editBtn').addEventListener('click',UpdateTask);
+        
+    });
+      
+  </script>
+   
+</body>
+</html>
